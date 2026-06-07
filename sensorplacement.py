@@ -1,13 +1,5 @@
 """
-Variance-Aware Robust Sensor Placement
-SEPARATE FIGURES VERSION - Each figure is independent
-
-Generates 5 standalone publication-quality figures:
-1. Baseline sensor placement
-2. Robust sensor placement
-3. Posterior uncertainty map
-4. Performance comparison bar chart
-5. Robustness-optimality trade-off curve
+Variance-Aware Robust Sensor Placement Simulation
 """
 
 import numpy as np
@@ -16,7 +8,6 @@ from matplotlib import rcParams
 import warnings
 warnings.filterwarnings('ignore')
 
-# Set publication-quality defaults
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 11
 rcParams['axes.linewidth'] = 1.5
@@ -24,14 +15,14 @@ rcParams['lines.linewidth'] = 2
 rcParams['figure.dpi'] = 300
 rcParams['savefig.dpi'] = 300
 
+
+#sensor placement simulation
 print("="*70)
-print("SENSOR PLACEMENT SIMULATION - SEPARATE FIGURES VERSION")
 print("="*70)
 
-# ============================================================================
-# SETUP
-# ============================================================================
 
+
+#setup
 n_alpha = 40
 n_p = 40
 alpha_vals = np.linspace(0, np.pi, n_alpha)
@@ -53,10 +44,7 @@ SIGMA_L = 1.0
 
 print(f"✓ Setup complete")
 
-# ============================================================================
-# DETECTION MODEL & VOID PROBABILITY
-# ============================================================================
-
+#Detection model and void probability computation
 def min_distance_line_to_point(line_alpha, line_p, sensor_x, sensor_y):
     eps = 1e-10
     tan_term = np.tan(line_alpha - np.pi/2)
@@ -98,11 +86,7 @@ def compute_void_probability(sensors, E_lambda, Var_lambda,
     void_prob = np.exp(-integral)
     
     return void_prob, miss_prob, integral
-
-# ============================================================================
-# GREEDY SELECTION
-# ============================================================================
-
+#Greedy selection Algorithm
 def greedy_select(E_lambda, Var_lambda, candidates,
                   alpha_vals, p_vals,
                   n_sensors=5, beta=0, method='mean-only', verbose=True):
@@ -139,9 +123,6 @@ def greedy_select(E_lambda, Var_lambda, candidates,
     
     return np.array(selected_sensors), void_probs
 
-# ============================================================================
-# RUN METHODS
-# ============================================================================
 
 print("\nMethod 1: Baseline (Mean-only)")
 sensors_baseline, vp_baseline = greedy_select(
@@ -157,10 +138,7 @@ sensors_robust, vp_robust = greedy_select(
     n_sensors=5, beta=1.0, method='robust', verbose=True
 )
 
-# ============================================================================
-# EVALUATION
-# ============================================================================
-
+#Evaluation of the 2 methods
 vp_base_nominal, _, _ = compute_void_probability(
     sensors_baseline, E_lambda, Var_lambda,
     alpha_vals, p_vals, beta=0, method='mean-only'
@@ -186,9 +164,7 @@ robustness_gain = (vp_robust_worst - vp_base_worst) / max(vp_base_worst, 0.001) 
 print(f"\n✓ Nominal: Baseline={vp_base_nominal:.4f}, Robust={vp_robust_nominal:.4f}")
 print(f"✓ Worst-case: Baseline={vp_base_worst:.4f}, Robust={vp_robust_worst:.4f}")
 
-# ============================================================================
-# FIGURE 1: BASELINE SENSOR PLACEMENT
-# ============================================================================
+##Baseline and robust sensor placement
 
 print("\nGenerating Figure 1: Baseline Placement...")
 
@@ -221,9 +197,7 @@ plt.savefig('Fig1_Baseline_Placement.png', format='png', bbox_inches='tight', dp
 print("✓ Saved: Fig1_Baseline_Placement.pdf / .png")
 plt.close()
 
-# ============================================================================
-# FIGURE 2: ROBUST SENSOR PLACEMENT
-# ============================================================================
+#Sensor placement 
 
 print("Generating Figure 2: Robust Placement...")
 
@@ -256,9 +230,7 @@ plt.savefig('Fig2_Robust_Placement.png', format='png', bbox_inches='tight', dpi=
 print("✓ Saved: Fig2_Robust_Placement.pdf / .png")
 plt.close()
 
-# ============================================================================
-# FIGURE 3: POSTERIOR UNCERTAINTY
-# ============================================================================
+#Posteriror uncertainty 
 
 print("Generating Figure 3: Posterior Uncertainty...")
 
@@ -289,9 +261,7 @@ plt.savefig('Fig3_Posterior_Uncertainty.png', format='png', bbox_inches='tight',
 print("✓ Saved: Fig3_Posterior_Uncertainty.pdf / .png")
 plt.close()
 
-# ============================================================================
-# FIGURE 4: PERFORMANCE COMPARISON
-# ============================================================================
+#PErformance comparison
 
 print("Generating Figure 4: Performance Comparison...")
 
@@ -335,10 +305,7 @@ plt.savefig('Fig4_Performance_Comparison.png', format='png', bbox_inches='tight'
 print("✓ Saved: Fig4_Performance_Comparison.pdf / .png")
 plt.close()
 
-# ============================================================================
-# FIGURE 5: ROBUSTNESS-OPTIMALITY TRADE-OFF
-# ============================================================================
-
+#Trade off curve
 print("Generating Figure 5: Trade-off Curve...")
 
 fig5, ax5 = plt.subplots(figsize=(8, 5.5))
@@ -397,9 +364,7 @@ plt.savefig('Fig5_Trade_off_Curve.png', format='png', bbox_inches='tight', dpi=3
 print("✓ Saved: Fig5_Trade_off_Curve.pdf / .png")
 plt.close()
 
-# ============================================================================
-# SUMMARY REPORT
-# ============================================================================
+
 
 print("\n" + "="*70)
 print("RESULTS SUMMARY")
